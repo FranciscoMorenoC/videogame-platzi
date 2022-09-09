@@ -7,6 +7,8 @@ const btnDown = document.querySelector('#down');
 
 let canvasSize;
 let elementsSize;
+let level = 0
+let lives = 3
 
 const playerPosition = {
   x: undefined,
@@ -26,9 +28,9 @@ window.addEventListener('resize', setCanvasSize);
 
 function setCanvasSize() {
   if (window.innerHeight > window.innerWidth) {
-    canvasSize = window.innerWidth * 0.8;
+    canvasSize = window.innerWidth * 0.9;
   } else {
-    canvasSize = window.innerHeight * 0.8;
+    canvasSize = window.innerHeight * 0.9;
   }
   
   canvas.setAttribute('width', canvasSize);
@@ -45,10 +47,15 @@ function startGame() {
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
 
-  const map = maps[0];
+  const map = maps[level];
+  if(!map){
+   gameWin()
+   return
+  }
   const mapRows = map.trim().split('\n');
   const mapRowCols = mapRows.map(row => row.trim().split(''));
  
+
   enemyPosition = []
   
   game.clearRect(0,0,canvasSize, canvasSize);
@@ -82,25 +89,50 @@ function startGame() {
 
 function movePlayer() {
 
-  const giftCollitionX = playerPosition.x.toFixed(2) ==  gifPosition.x.toFixed(2)
-  const giftCollitionY =  playerPosition.y.toFixed(2) == gifPosition.y.toFixed(2)
+  const giftCollitionX = playerPosition.x.toFixed(3) ==  gifPosition.x.toFixed(3)
+  const giftCollitionY =  playerPosition.y.toFixed(3) == gifPosition.y.toFixed(3)
   const giftCollition = giftCollitionX && giftCollitionY
 
   if (giftCollition){
-    console.log('ganaste');
+    levelWin()
   }
 
   const enemyCollition = enemyPosition.find(enemy => {
-    const enemyCollitionX = enemy.x.toFixed(2) == playerPosition.x.toFixed(2)
-    const enemyCollitionY = enemy.y.toFixed(2) == playerPosition.y.toFixed(2)
+    const enemyCollitionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3)
+    const enemyCollitionY = enemy.y.toFixed(3) == playerPosition.y.toFixed(3)
     return enemyCollitionX && enemyCollitionY
   })
 
   if (enemyCollition){
-    console.log('Te moriste');
+    levelFail ()
   }
 
   game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y);
+}
+
+function levelFail() {
+  console.log('perdiste');
+  lives --
+  
+  if (lives <= 0) {
+    level = 0
+    lives = 3
+  } 
+  
+  playerPosition.x = undefined
+  playerPosition.y = undefined
+  startGame()
+}
+
+
+function levelWin() {
+  console.log('subiste nivel');
+  level++
+  startGame()
+}
+
+function gameWin(){
+  console.log('win!');
 }
 
 window.addEventListener('keydown', moveByKeys);
