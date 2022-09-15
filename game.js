@@ -4,11 +4,20 @@ const btnUp = document.querySelector('#up');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const btnDown = document.querySelector('#down');
+const spanLives = document.querySelector('#lives')
+const spanTime = document.querySelector('#time')
+const spanRecord = document.querySelector('#record')
+const pResult = document.querySelector('#result')
 
 let canvasSize;
 let elementsSize;
 let level = 0
 let lives = 3
+let enemyPosition = []
+
+let timeStart;
+let timePalyer
+let timeInterval
 
 const playerPosition = {
   x: undefined,
@@ -21,16 +30,15 @@ const gifPosition= {
 
 }
 
-let enemyPosition = []
 
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
 function setCanvasSize() {
   if (window.innerHeight > window.innerWidth) {
-    canvasSize = window.innerWidth * 0.9;
+    canvasSize = window.innerWidth * 0.75;
   } else {
-    canvasSize = window.innerHeight * 0.9;
+    canvasSize = window.innerHeight * 0.75;
   }
   
   canvas.setAttribute('width', canvasSize);
@@ -42,8 +50,6 @@ function setCanvasSize() {
 }
 
 function startGame() {
- 
-
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
 
@@ -52,9 +58,17 @@ function startGame() {
    gameWin()
    return
   }
+
+  if (!timeStart) {
+    timeStart = Date.now()
+    timeInterval = setInterval(showTime, 100)
+    showRecord()
+  }
+
   const mapRows = map.trim().split('\n');
   const mapRowCols = mapRows.map(row => row.trim().split(''));
  
+  showLives()
 
   enemyPosition = []
   
@@ -113,15 +127,30 @@ function movePlayer() {
 function levelFail() {
   console.log('perdiste');
   lives --
+
   
   if (lives <= 0) {
     level = 0
     lives = 3
+    timeStart = undefined
   } 
   
   playerPosition.x = undefined
   playerPosition.y = undefined
   startGame()
+}
+
+function showLives() {
+  const heart = Array(lives).fill(emojis['HEART'])
+
+  spanLives.innerHTML = heart
+}
+
+function showTime() {
+    spanTime.innerHTML = Date.now() - timeStart
+}
+function showRecord() {
+    spanRecord.innerHTML = localStorage.getItem('record_time')
 }
 
 
@@ -133,6 +162,23 @@ function levelWin() {
 
 function gameWin(){
   console.log('win!');
+  clearInterval(timeInterval)
+  const playerTime = Date.now() - timeStart
+
+  const recordTime = localStorage.getItem('record_time')
+  if (recordTime){
+    if (recordTime >= playerTime){
+      localStorage.setItem='record_time', playerTime
+      pResult.innerHTML='mamaste mijo';
+    } else {
+      pResult.innerHTML='eres lento';
+    }
+  } else {
+    localStorage.setItem('record_time', playerTime)
+    pResult.innerHTML='Haz el menor tiempo posible'
+  }
+
+  console.log({recordTime, playerTime});
 }
 
 window.addEventListener('keydown', moveByKeys);
