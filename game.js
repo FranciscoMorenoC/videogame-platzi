@@ -34,17 +34,25 @@ const gifPosition= {
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
+// function fixNumber(n) {
+//   return Number(n.toFixed(2))
+// }
+
 function setCanvasSize() {
   if (window.innerHeight > window.innerWidth) {
-    canvasSize = window.innerWidth * 0.75;
+    canvasSize = window.innerWidth * 0.7;
   } else {
-    canvasSize = window.innerHeight * 0.75;
+    canvasSize = window.innerHeight * 0.7;
   }
+  canvasSize = Number(canvasSize.toFixed(0))
   
   canvas.setAttribute('width', canvasSize);
   canvas.setAttribute('height', canvasSize);
   
   elementsSize = canvasSize / 10;
+
+  playerPosition.x = undefined
+  playerPosition.y = undefined
 
   startGame();
 }
