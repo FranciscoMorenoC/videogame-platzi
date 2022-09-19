@@ -34,9 +34,9 @@ const gifPosition= {
 window.addEventListener('load', setCanvasSize);
 window.addEventListener('resize', setCanvasSize);
 
-// function fixNumber(n) {
-//   return Number(n.toFixed(2))
-// }
+function fixNumber(n) {
+  return Number(n.toFixed(0))
+}
 
 function setCanvasSize() {
   if (window.innerHeight > window.innerWidth) {
@@ -50,6 +50,7 @@ function setCanvasSize() {
   canvas.setAttribute('height', canvasSize);
   
   elementsSize = canvasSize / 10;
+  elementsSize = Number(elementsSize.toFixed(0))
 
   playerPosition.x = undefined
   playerPosition.y = undefined
@@ -203,6 +204,7 @@ function moveByKeys(event) {
   
 }
 function moveUp() {
+  
 
   if((playerPosition.y - elementsSize) < elementsSize){
     console.log('out');
@@ -210,6 +212,7 @@ function moveUp() {
   playerPosition.y -= elementsSize;
   startGame();
   }
+  
 }
 function moveLeft() {
 
