@@ -186,6 +186,7 @@ function gameWin(){
     localStorage.setItem('record_time', playerTime)
     pResult.innerHTML='Haz el menor tiempo posible'
   }
+  alert('ganaste')
 
   console.log({recordTime, playerTime});
 }
